@@ -1,188 +1,187 @@
-# Link_list-
+# linklist 
 #include <iostream>
-using namespace std ;
+
+using namespace std;
+
 // Node structure for the linked list
 struct Node {
     int data;
     Node* next;
-    
-    // Constructor to initialize node
-    Node(int value) : data(value), next(nullptr) {}
 };
 
-// Linked list class
+// LinkedList class
 class LinkedList {
 private:
     Node* head;
 
 public:
-    // Constructor to initialize an empty linked list
-    LinkedList() : head(nullptr) {}
+    // Constructor
+    LinkedList() {
+        head = NULL;
+    }
+
+    // Function to insert a new node at the nth position
+    void insertAtN(int position, int value) {
+        Node* newNode = new Node;
+        newNode->data = value;
+        newNode->next = NULL;
+
+        if (position == 1) {
+            newNode->next = head;
+            head = newNode;
+            return;
+        }
+
+        Node* temp = head;
+        for (int i = 1; i < position - 1 && temp != NULL; ++i) {
+            temp = temp->next;
+        }
+
+        if (temp == NULL) {
+            cout << "Invalid position." << endl;
+            return;
+        }
+
+        newNode->next = temp->next;
+        temp->next = newNode;
+    }
+
+    // Function to update the value at the nth position
+    void updateN(int position, int value) {
+        Node* temp = head;
+        for (int i = 1; i < position && temp != NULL; ++i) {
+            temp = temp->next;
+        }
+
+        if (temp == NULL) {
+            cout << "Invalid position." << endl;
+            return;
+        }
+
+        temp->data = value;
+    }
 
     // Function to search for a value in the linked list
     bool search(int value) {
-        Node* current = head;
-        while (current != nullptr) {
-            if (current->data == value) {
+        Node* temp = head;
+        while (temp != NULL) {
+            if (temp->data == value) {
                 return true; // Value found
             }
-            current = current->next;
+            temp = temp->next;
         }
         return false; // Value not found
     }
 
-    // Function to update the value at position n
-    void updateAtPosition(int n, int newValue) {
-        Node* current = head;
-        for (int i = 1; i < n && current != nullptr; ++i) {
-            current = current->next;
-        }
-
-        if (current != nullptr) {
-            current->data = newValue;
-            cout << "Updated value at position " << n << " to " << newValue << endl;
-        } else {
-            cout << "Position " << n << " not found." << endl;
-        }
-    }
-
-    // Function to insert a value at position n
-    void insertAtPosition(int n, int value) {
-        Node* newNode = new Node(value);
-
-        if (n == 1) {
-            newNode->next = head;
-            head = newNode;
-        } else {
-            Node* current = head;
-            for (int i = 1; i < n - 1 && current != nullptr; ++i) {
-                current = current->next;
-            }
-
-            if (current != nullptr) {
-                newNode->next = current->next;
-                current->next = newNode;
-            } else {
-                cout << "Position " << n << " not found. Insertion failed." << endl;
-                delete newNode;
-            }
-        }
-
-        cout << "Inserted value " << value << " at position " << n << endl;
-    }
-
-    // Function to delete the first node in the linked list
+    // Function to delete the first node
     void deleteFromBeginning() {
-        if (head != nullptr) {
+        if (head == NULL) {
+            cout << "List is empty." << endl;
+            return;
+        }
+
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+    }
+
+    // Function to delete the last node
+    void deleteFromEnd() {
+        if (head == NULL) {
+            cout << "List is empty." << endl;
+            return;
+        }
+
+        if (head->next == NULL) {
+            delete head;
+            head = NULL;
+            return;
+        }
+
+        Node* temp = head;
+        while (temp->next->next != NULL) {
+            temp = temp->next;
+        }
+
+        delete temp->next;
+        temp->next = NULL;
+    }
+
+    // Function to delete a node from the nth position
+    void deleteFromN(int position) {
+        if (head == NULL) {
+            cout << "List is empty." << endl;
+            return;
+        }
+
+        if (position == 1) {
             Node* temp = head;
             head = head->next;
             delete temp;
-            cout << "Deleted from the beginning." << endl;
-        } else {
-            cout << "List is empty. Deletion failed." << endl;
+            return;
         }
-    }
 
-    // Function to delete the last node in the linked list
-    void deleteFromEnd() {
-        if (head != nullptr) {
-            if (head->next == nullptr) {
-                delete head;
-                head = nullptr;
-            } else {
-                Node* current = head;
-                while (current->next->next != nullptr) {
-                    current = current->next;
-                }
-                delete current->next;
-                current->next = nullptr;
-            }
-            cout << "Deleted from the end." << endl;
-        } else {
-            cout << "List is empty. Deletion failed." << endl;
+        Node* temp = head;
+        for (int i = 1; i < position - 1 && temp != NULL; ++i) {
+            temp = temp->next;
         }
-    }
 
-    // Function to delete the node at position n
-    void deleteAtPosition(int n) {
-        if (n == 1) {
-            deleteFromBeginning();
-        } else {
-            Node* current = head;
-            for (int i = 1; i < n - 1 && current != nullptr; ++i) {
-                current = current->next;
-            }
-
-            if (current != nullptr && current->next != nullptr) {
-                Node* temp = current->next;
-                current->next = current->next->next;
-                delete temp;
-                cout << "Deleted from position " << n << endl;
-            } else {
-                cout << "Position " << n << " not found. Deletion failed." << endl;
-            }
+        if (temp == NULL || temp->next == NULL) {
+            cout << "Invalid position." << endl;
+            return;
         }
+
+        Node* toDelete = temp->next;
+        temp->next = temp->next->next;
+        delete toDelete;
     }
 
     // Function to display the linked list
     void display() {
-        Node* current = head;
-        while (current != nullptr) {
-            cout << current->data << " ";
-            current = current->next;
+        Node* temp = head;
+        while (temp != NULL) {
+            cout << temp->data << " ";
+            temp = temp->next;
         }
         cout << endl;
     }
 };
 
-// Main function
 int main() {
-    LinkedList list;
+    LinkedList myList;
 
-    // Inserting values into the linked list
-    list.insertAtPosition(1, 70);
-    list.insertAtPosition(2, 26);
-    list.insertAtPosition(3, 39);
+    myList.insertAtN(1, 10);
+    myList.insertAtN(2, 20);
+    myList.insertAtN(3, 30);
 
-    // Displaying the initial linked list
-    cout << "Initial Linked List: ";
-    list.display();
+    cout << "Original List: ";
+    myList.display();
 
-    // Searching for a value
-    if (list.search(20)) {
-    cout << "Value 20 found in the list." << endl;
+    myList.updateN(2, 25);
+
+    cout << "List after updating at position 2: ";
+    myList.display();
+
+    if (myList.search(25)) {
+        cout << "Value 25 found in the list." << endl;
     } else {
-        cout << "Value 20 not found in the list." << endl;
+        cout << "Value 25 not found in the list." << endl;
     }
 
-    // Updating a value at position 2
-    list.updateAtPosition(2, 25);
+    myList.deleteFromBeginning();
 
-    // Displaying the updated linked list
-    cout << "Updated Linked List: ";
-    list.display();
+    cout << "List after deleting from the beginning: ";
+    myList.display();
 
-    // Deleting from the beginning
-    list.deleteFromBeginning();
+    myList.deleteFromEnd();
 
-    // Displaying the linked list after deletion
-    cout << "Linked List after deleting from the beginning: ";
-    list.display();
+    cout << "List after deleting from the end: ";
+    myList.display();
 
-    // Deleting from the end
-    list.deleteFromEnd();
+    myList.deleteFromN(2);
 
-    // Displaying the linked list after deletion
-    cout << "Linked List after deleting from the end: ";
-    list.display();
-
-    // Deleting from position 2
-    list.deleteAtPosition(2);
-
-    // Displaying the final linked list
-    cout << "Final Linked List: ";
-    list.display();
+    cout << "List after deleting from position 2: ";
+    myList.display();
 
     return 0;
 }
-
